@@ -22,4 +22,14 @@ internal class DefaultPackagingTest {
     assertThatThrownBy { packaging.wrapRoses(2) }.hasMessageContaining("Roses can't be wrapped")
     assertThatThrownBy { packaging.wrapRoses(7) }.hasMessageContaining("Roses can't be wrapped")
   }
+
+  @Test
+  internal fun `should wrap some lilies`() {
+    assertThat(packaging.wrapLilies(3)).isEqualTo(listOf(Pair(1, 3)))
+    assertThat(packaging.wrapLilies(6)).isEqualTo(listOf(Pair(1, 6)))
+    assertThat(packaging.wrapLilies(9)).isEqualTo(listOf(Pair(1, 9)))
+    assertThat(packaging.wrapLilies(12)).isEqualTo(listOf(Pair(1, 9),Pair(1, 3)))
+    assertThat(packaging.wrapLilies(15)).isEqualTo(listOf(Pair(1, 9),Pair(1, 6)))
+    assertThat(packaging.wrapLilies(18)).isEqualTo(listOf(Pair(2, 9)))
+  }
 }
