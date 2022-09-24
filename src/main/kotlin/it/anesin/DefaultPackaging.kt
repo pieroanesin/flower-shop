@@ -32,6 +32,8 @@ class DefaultPackaging: Packaging {
     val totalSmallBundle = remainingFlowers / smallBundle
     remainingFlowers %= smallBundle
 
+    if (quantity < smallBundle || remainingFlowers > 0) throw Exception("Lilies can't be wrapped")
+
     return listOf(Pair(totalBigBundles, bigBundle), Pair(totalMediumBundle, mediumBundle), Pair(totalSmallBundle, smallBundle))
       .filter { it.first > 0 }
   }

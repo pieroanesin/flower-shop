@@ -32,4 +32,13 @@ internal class DefaultPackagingTest {
     assertThat(packaging.wrapLilies(15)).isEqualTo(listOf(Pair(1, 9),Pair(1, 6)))
     assertThat(packaging.wrapLilies(18)).isEqualTo(listOf(Pair(2, 9)))
   }
+
+  @Test
+  internal fun `should throw an exception if quantity of lilies can't be wrapped`() {
+    assertThatThrownBy { packaging.wrapLilies(0) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapLilies(-5) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapLilies(2) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapLilies(7) }.hasMessageContaining("Lilies can't be wrapped")
+  }
+
 }
