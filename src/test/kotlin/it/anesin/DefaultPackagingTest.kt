@@ -1,6 +1,7 @@
 package it.anesin
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class DefaultPackagingTest {
@@ -12,5 +13,13 @@ internal class DefaultPackagingTest {
     assertThat(packaging.wrapRoses(10)).isEqualTo(listOf(Pair(1, 10)))
     assertThat(packaging.wrapRoses(15)).isEqualTo(listOf(Pair(1, 10),Pair(1, 5)))
     assertThat(packaging.wrapRoses(55)).isEqualTo(listOf(Pair(5, 10),Pair(1, 5)))
+  }
+
+  @Test
+  internal fun `should throw an exception if quantity of roses can't be wrapped`() {
+    assertThatThrownBy { packaging.wrapRoses(0) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapRoses(-5) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapRoses(2) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapRoses(7) }.hasMessageContaining("Roses can't be wrapped")
   }
 }

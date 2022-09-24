@@ -7,8 +7,12 @@ class DefaultPackaging: Packaging {
     val smallBundle = 5
 
     val totalBigBundles = quantity / bigBundle
-    val remainingFlowers = quantity % bigBundle
+    var remainingFlowers = quantity % bigBundle
+
     val totalSmallBundle = remainingFlowers / smallBundle
+    remainingFlowers %= smallBundle
+
+    if (quantity < smallBundle || remainingFlowers > 0) throw Exception("Roses can't be wrapped")
 
     return listOf(Pair(totalBigBundles, bigBundle), Pair(totalSmallBundle, smallBundle))
       .filter { it.first > 0 }
