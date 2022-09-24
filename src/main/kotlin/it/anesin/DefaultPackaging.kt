@@ -83,6 +83,8 @@ class DefaultPackaging: Packaging {
       }
     }
 
+    if (quantity < smallBundle || remainingFlowers > 0) throw Exception("Tulips can't be wrapped")
+
     return listOf(Pair(totalBigBundles, bigBundle), Pair(totalMediumBundles, mediumBundle), Pair(totalSmallBundles, smallBundle))
       .filter { it.first > 0 }
   }

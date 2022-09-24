@@ -52,4 +52,12 @@ internal class DefaultPackagingTest {
     assertThat(packaging.wrapTulips(18)).isEqualTo(listOf(Pair(2, 9)))
     assertThat(packaging.wrapTulips(48)).isEqualTo(listOf(Pair(5, 9), Pair(1, 3)))
   }
+
+  @Test
+  internal fun `should throw an exception if quantity of tulips can't be wrapped`() {
+    assertThatThrownBy { packaging.wrapTulips(0) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapTulips(-5) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapTulips(2) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapTulips(7) }.hasMessageContaining("Tulips can't be wrapped")
+  }
 }
