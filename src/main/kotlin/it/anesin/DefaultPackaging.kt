@@ -10,7 +10,7 @@ class DefaultPackaging : Packaging {
       L09 -> listOf(9, 6, 3)
       T58 -> listOf(9, 5, 3)
     }
-    var (packs, remainingFlowers) = wrap(quantity, bundleSizes)
+    var (packs, remainingFlowers) = wrap(quantity, bundleSizes, type)
 
     while (isWrongCombination(remainingFlowers) && (packs[0].bundleQuantity > 0 || packs[1].bundleQuantity > 0)) {
       while (isWrongCombination(remainingFlowers) && packs[1].bundleQuantity > 0) {
@@ -36,9 +36,9 @@ class DefaultPackaging : Packaging {
     val bigPack = packs[0]
     var mediumPack = packs[1]
 
-    mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize)
+    mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize, mediumPack.type)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packs, remainingFlowers) = wrap(flowers, bundleSizes)
+    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, mediumPack.type)
     val smallPack = packs.first()
 
     return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
@@ -48,9 +48,9 @@ class DefaultPackaging : Packaging {
     var bigPack = packs[0]
     var mediumPack = packs[1]
 
-    bigPack = Pack(bigPack.bundleQuantity - 1, bigPack.bundleSize)
+    bigPack = Pack(bigPack.bundleQuantity - 1, bigPack.bundleSize, bigPack.type)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packs, remainingFlowers) = wrap(flowers, bundleSizes)
+    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, bigPack.type)
     mediumPack = packs.first()
     val smallPack = packs.last()
 
@@ -59,16 +59,16 @@ class DefaultPackaging : Packaging {
 
   private fun isWrongCombination(remainingFlowers: Int) = remainingFlowers != 0
 
-  private fun wrap(flowers: Int, bundleSizes: List<Int>): Pair<List<Pack>, Int> {
+  private fun wrap(flowers: Int, bundleSizes: List<Int>, type: FlowerType): Pair<List<Pack>, Int> {
     val packs = mutableListOf<Pack>()
     var remainingFlowers = flowers
 
     bundleSizes.forEach { bundleSize ->
-      packs.add(packWith(remainingFlowers, bundleSize))
+      packs.add(packWith(remainingFlowers, bundleSize, type))
       remainingFlowers %= bundleSize
     }
     return Pair(packs, remainingFlowers)
   }
 
-  private fun packWith(flowersQuantity: Int, bundleSize: Int) = Pack(bundleQuantity = flowersQuantity / bundleSize, bundleSize)
+  private fun packWith(flowersQuantity: Int, bundleSize: Int, type: FlowerType) = Pack(bundleQuantity = flowersQuantity / bundleSize, bundleSize, type)
 }
