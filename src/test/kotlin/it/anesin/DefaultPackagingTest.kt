@@ -9,10 +9,10 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should wrap some roses`() {
-    assertThat(packaging.wrapRoses(5)).isEqualTo(listOf(Pair(1, 5)))
-    assertThat(packaging.wrapRoses(10)).isEqualTo(listOf(Pair(1, 10)))
-    assertThat(packaging.wrapRoses(15)).isEqualTo(listOf(Pair(1, 10),Pair(1, 5)))
-    assertThat(packaging.wrapRoses(55)).isEqualTo(listOf(Pair(5, 10),Pair(1, 5)))
+    assertThat(packaging.wrapRoses(5)).isEqualTo(listOf(Pack(1, 5)))
+    assertThat(packaging.wrapRoses(10)).isEqualTo(listOf(Pack(1, 10)))
+    assertThat(packaging.wrapRoses(15)).isEqualTo(listOf(Pack(1, 10),Pack(1, 5)))
+    assertThat(packaging.wrapRoses(55)).isEqualTo(listOf(Pack(5, 10),Pack(1, 5)))
   }
 
   @Test
@@ -25,12 +25,12 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should wrap some lilies`() {
-    assertThat(packaging.wrapLilies(3)).isEqualTo(listOf(Pair(1, 3)))
-    assertThat(packaging.wrapLilies(6)).isEqualTo(listOf(Pair(1, 6)))
-    assertThat(packaging.wrapLilies(9)).isEqualTo(listOf(Pair(1, 9)))
-    assertThat(packaging.wrapLilies(12)).isEqualTo(listOf(Pair(1, 9),Pair(1, 3)))
-    assertThat(packaging.wrapLilies(15)).isEqualTo(listOf(Pair(1, 9),Pair(1, 6)))
-    assertThat(packaging.wrapLilies(18)).isEqualTo(listOf(Pair(2, 9)))
+    assertThat(packaging.wrapLilies(3)).isEqualTo(listOf(Pack(1, 3)))
+    assertThat(packaging.wrapLilies(6)).isEqualTo(listOf(Pack(1, 6)))
+    assertThat(packaging.wrapLilies(9)).isEqualTo(listOf(Pack(1, 9)))
+    assertThat(packaging.wrapLilies(12)).isEqualTo(listOf(Pack(1, 9),Pack(1, 3)))
+    assertThat(packaging.wrapLilies(15)).isEqualTo(listOf(Pack(1, 9),Pack(1, 6)))
+    assertThat(packaging.wrapLilies(18)).isEqualTo(listOf(Pack(2, 9)))
   }
 
   @Test
@@ -43,14 +43,14 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should wrap some tulips`() {
-    assertThat(packaging.wrapTulips(3)).isEqualTo(listOf(Pair(1, 3)))
-    assertThat(packaging.wrapTulips(5)).isEqualTo(listOf(Pair(1, 5)))
-    assertThat(packaging.wrapTulips(6)).isEqualTo(listOf(Pair(2, 3)))
-    assertThat(packaging.wrapTulips(9)).isEqualTo(listOf(Pair(1, 9)))
-    assertThat(packaging.wrapTulips(10)).isEqualTo(listOf(Pair(2, 5)))
-    assertThat(packaging.wrapTulips(13)).isEqualTo(listOf(Pair(2, 5), Pair(1, 3)))
-    assertThat(packaging.wrapTulips(18)).isEqualTo(listOf(Pair(2, 9)))
-    assertThat(packaging.wrapTulips(48)).isEqualTo(listOf(Pair(5, 9), Pair(1, 3)))
+    assertThat(packaging.wrapTulips(3)).isEqualTo(listOf(Pack(1, 3)))
+    assertThat(packaging.wrapTulips(5)).isEqualTo(listOf(Pack(1, 5)))
+    assertThat(packaging.wrapTulips(6)).isEqualTo(listOf(Pack(2, 3)))
+    assertThat(packaging.wrapTulips(9)).isEqualTo(listOf(Pack(1, 9)))
+    assertThat(packaging.wrapTulips(10)).isEqualTo(listOf(Pack(2, 5)))
+    assertThat(packaging.wrapTulips(13)).isEqualTo(listOf(Pack(2, 5), Pack(1, 3)))
+    assertThat(packaging.wrapTulips(18)).isEqualTo(listOf(Pack(2, 9)))
+    assertThat(packaging.wrapTulips(48)).isEqualTo(listOf(Pack(5, 9), Pack(1, 3)))
   }
 
   @Test
