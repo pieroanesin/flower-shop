@@ -50,7 +50,10 @@ internal class DefaultPackagingTest {
     assertThat(packaging.wrapTulips(10)).isEqualTo(listOf(Pack(2, 5)))
     assertThat(packaging.wrapTulips(13)).isEqualTo(listOf(Pack(2, 5), Pack(1, 3)))
     assertThat(packaging.wrapTulips(18)).isEqualTo(listOf(Pack(2, 9)))
+    assertThat(packaging.wrapTulips(43)).isEqualTo(listOf(Pack(3, 9), Pack(2, 5), Pack(2, 3)))
+    assertThat(packaging.wrapTulips(46)).isEqualTo(listOf(Pack(4, 9), Pack(2, 5)))
     assertThat(packaging.wrapTulips(48)).isEqualTo(listOf(Pack(5, 9), Pack(1, 3)))
+    assertThat(packaging.wrapTulips(50)).isEqualTo(listOf(Pack(5, 9), Pack(1, 5)))
   }
 
   @Test

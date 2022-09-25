@@ -22,30 +22,46 @@ class DefaultPackaging: Packaging {
 
   override fun wrapTulips(quantity: Int): List<Pack> {
     var bundleSizes = listOf(9, 5, 3)
-    val totalPacks = mutableListOf<Pack>()
 
     var (packs, remainingFlowers) = wrap(quantity, bundleSizes)
+    var bigPack = packs[0]
+    var mediumPack = packs[1]
+    var smallPack = packs[2]
 
-    while (remainingFlowers != 0 && bundleSizes.size > 1) {
-      if (packs[0].bundleQuantity >= bundleSizes[1]) {
-        totalPacks += mutableListOf(Pack(bundleQuantity = packs[0].bundleQuantity - (packs[0].bundleQuantity % bundleSizes[1]), packs[0].bundleSize))
-        remainingFlowers = quantity - (packs[0].bundleQuantity * bundleSizes[0])
-      } else {
-        remainingFlowers = quantity
+    if (isWrongCombination(remainingFlowers)) {
+
+      while (isWrongCombination(remainingFlowers) && mediumPack.bundleQuantity > 0) {
+        mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize)
+        remainingFlowers = quantity - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
+        packs = wrap(remainingFlowers, listOf(bundleSizes.last())).first
+        remainingFlowers = wrap(remainingFlowers, listOf(bundleSizes.last())).second
+        smallPack = packs.first()
       }
 
-      bundleSizes = bundleSizes.drop(1)
+      while (isWrongCombination(remainingFlowers) && bigPack.bundleQuantity > 0) {
+        bigPack = Pack(bigPack.bundleQuantity - 1, bigPack.bundleSize)
+        remainingFlowers = quantity - ((bigPack.bundleQuantity * bigPack.bundleSize))
+        packs = wrap(remainingFlowers, bundleSizes.drop(1)).first
+        remainingFlowers = wrap(remainingFlowers, bundleSizes.drop(1)).second
+        mediumPack = packs.first()
+        smallPack = packs.last()
 
-      packs = wrap(remainingFlowers, bundleSizes).first
-      remainingFlowers = wrap(remainingFlowers, bundleSizes).second
+        while (isWrongCombination(remainingFlowers) && mediumPack.bundleQuantity > 0) {
+          mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize)
+          remainingFlowers = quantity - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
+          packs = wrap(remainingFlowers, listOf(bundleSizes.last())).first
+          remainingFlowers = wrap(remainingFlowers, listOf(bundleSizes.last())).second
+          smallPack = packs.first()
+        }
+      }
     }
-
-    totalPacks += packs
 
     if (quantity < bundleSizes.min() || remainingFlowers > 0) throw Exception("Tulips can't be wrapped")
 
-    return totalPacks.filter { it.bundleQuantity > 0 }
+    return listOf(bigPack, mediumPack, smallPack).filter { it.bundleQuantity > 0 }
   }
+
+  private fun isWrongCombination(remainingFlowers: Int) = remainingFlowers != 0
 
   private fun wrap(flowers: Int, bundleSizes: List<Int>): Pair<List<Pack>,Int> {
     val packs = mutableListOf<Pack>()
