@@ -3,19 +3,23 @@ package it.anesin
 class DefaultPackaging: Packaging {
 
   override fun wrapRoses(quantity: Int): List<Pair<Int, Int>> {
-    val bigBundle = 10
-    val smallBundle = 5
+    val result = mutableListOf<Pair<Int, Int>>()
+    val bundleSizes = listOf(10, 5)
+    var remainingFlowers = quantity
 
-    val totalBigBundles = quantity / bigBundle
-    var remainingFlowers = quantity % bigBundle
+    bundleSizes.forEach { bundleSize ->
+      result.add(totalBundles(remainingFlowers, bundleSize))
+      remainingFlowers %= bundleSize
+    }
 
-    val totalSmallBundles = remainingFlowers / smallBundle
-    remainingFlowers %= smallBundle
+    if (quantity < bundleSizes.min() || remainingFlowers > 0) throw Exception("Roses can't be wrapped")
 
-    if (quantity < smallBundle || remainingFlowers > 0) throw Exception("Roses can't be wrapped")
+    return result.filter { it.first > 0 }
+  }
 
-    return listOf(Pair(totalBigBundles, bigBundle), Pair(totalSmallBundles, smallBundle))
-      .filter { it.first > 0 }
+  private fun totalBundles(flowers: Int, size: Int): Pair<Int, Int> {
+    val quantity = flowers / size
+    return Pair(quantity, size)
   }
 
   override fun wrapLilies(quantity: Int): List<Pair<Int, Int>> {
