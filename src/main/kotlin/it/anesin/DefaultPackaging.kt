@@ -38,53 +38,53 @@ class DefaultPackaging: Packaging {
   }
 
   override fun wrapTulips(quantity: Int): List<Pair<Int, Int>> {
-    val bigBundle = 9
-    val mediumBundle = 5
-    val smallBundle = 3
+    var result = mutableListOf<Pair<Int, Int>>()
+    var bundleSizes = listOf(9, 5, 3)
+    var remainingFlowers = quantity
 
-    var totalBigBundles = quantity / bigBundle
-    var remainingFlowers = quantity % bigBundle
-
-    var totalMediumBundles = remainingFlowers / mediumBundle
-    remainingFlowers %= mediumBundle
-
-    var totalSmallBundles = remainingFlowers / smallBundle
-    remainingFlowers %= smallBundle
+    bundleSizes.forEach { bundleSize ->
+      result.add(totalBundles(remainingFlowers, bundleSize))
+      remainingFlowers %= bundleSize
+    }
 
     if (remainingFlowers != 0) {
-      if (totalBigBundles < mediumBundle) {
-        totalBigBundles = 0
+      if (result[0].first < bundleSizes[1]) {
+        result = mutableListOf()
         remainingFlowers = quantity
       }
       else {
-        totalBigBundles -= (totalBigBundles % mediumBundle)
-        remainingFlowers = quantity - (totalBigBundles * bigBundle)
+        result = mutableListOf(Pair(result[0].first - (result[0].first % bundleSizes[1]), result[0].second))
+        remainingFlowers = quantity - (result[0].first * bundleSizes[0])
       }
 
-      totalMediumBundles = remainingFlowers / mediumBundle
-      remainingFlowers %= mediumBundle
+      bundleSizes = bundleSizes.drop(1)
 
-      totalSmallBundles = remainingFlowers / smallBundle
-      remainingFlowers %= smallBundle
+      bundleSizes.forEach { bundleSize ->
+        result.add(totalBundles(remainingFlowers, bundleSize))
+        remainingFlowers %= bundleSize
+      }
 
       if (remainingFlowers != 0) {
-        if (totalMediumBundles < smallBundle) {
-          totalMediumBundles = 0
+        if (result[0].first < bundleSizes[1]) {
+          result = mutableListOf()
           remainingFlowers = quantity
         }
         else {
-          totalMediumBundles -= (totalMediumBundles % smallBundle)
-          remainingFlowers = quantity - (totalMediumBundles * mediumBundle)
+          result = mutableListOf(Pair(result[0].first - (result[0].first % bundleSizes[1]), result[0].second))
+          remainingFlowers = quantity - (result[0].first * bundleSizes[0])
         }
 
-        totalSmallBundles = remainingFlowers / smallBundle
-        remainingFlowers %= smallBundle
+        bundleSizes = bundleSizes.drop(1)
+
+        bundleSizes.forEach { bundleSize ->
+          result.add(totalBundles(remainingFlowers, bundleSize))
+          remainingFlowers %= bundleSize
+        }
       }
     }
 
-    if (quantity < smallBundle || remainingFlowers > 0) throw Exception("Tulips can't be wrapped")
+    if (quantity < bundleSizes.min() || remainingFlowers > 0) throw Exception("Tulips can't be wrapped")
 
-    return listOf(Pair(totalBigBundles, bigBundle), Pair(totalMediumBundles, mediumBundle), Pair(totalSmallBundles, smallBundle))
-      .filter { it.first > 0 }
+    return result.filter { it.first > 0 }
   }
 }
