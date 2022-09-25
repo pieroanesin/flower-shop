@@ -1,5 +1,6 @@
 package it.anesin
 
+import it.anesin.FlowerType.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -9,58 +10,58 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should wrap some roses`() {
-    assertThat(packaging.wrapRoses(5)).isEqualTo(listOf(Pack(1, 5)))
-    assertThat(packaging.wrapRoses(10)).isEqualTo(listOf(Pack(1, 10)))
-    assertThat(packaging.wrapRoses(15)).isEqualTo(listOf(Pack(1, 10),Pack(1, 5)))
-    assertThat(packaging.wrapRoses(55)).isEqualTo(listOf(Pack(5, 10),Pack(1, 5)))
+    assertThat(packaging.wrapFlowers(5, R12)).isEqualTo(listOf(Pack(1, 5)))
+    assertThat(packaging.wrapFlowers(10, R12)).isEqualTo(listOf(Pack(1, 10)))
+    assertThat(packaging.wrapFlowers(15, R12)).isEqualTo(listOf(Pack(1, 10),Pack(1, 5)))
+    assertThat(packaging.wrapFlowers(55, R12)).isEqualTo(listOf(Pack(5, 10),Pack(1, 5)))
   }
 
   @Test
   internal fun `should throw an exception if quantity of roses can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapRoses(0) }.hasMessageContaining("Roses can't be wrapped")
-    assertThatThrownBy { packaging.wrapRoses(-5) }.hasMessageContaining("Roses can't be wrapped")
-    assertThatThrownBy { packaging.wrapRoses(2) }.hasMessageContaining("Roses can't be wrapped")
-    assertThatThrownBy { packaging.wrapRoses(7) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, R12) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(-5, R12) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(2, R12) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(7, R12) }.hasMessageContaining("Roses can't be wrapped")
   }
 
   @Test
   internal fun `should wrap some lilies`() {
-    assertThat(packaging.wrapLilies(3)).isEqualTo(listOf(Pack(1, 3)))
-    assertThat(packaging.wrapLilies(6)).isEqualTo(listOf(Pack(1, 6)))
-    assertThat(packaging.wrapLilies(9)).isEqualTo(listOf(Pack(1, 9)))
-    assertThat(packaging.wrapLilies(12)).isEqualTo(listOf(Pack(1, 9),Pack(1, 3)))
-    assertThat(packaging.wrapLilies(15)).isEqualTo(listOf(Pack(1, 9),Pack(1, 6)))
-    assertThat(packaging.wrapLilies(18)).isEqualTo(listOf(Pack(2, 9)))
+    assertThat(packaging.wrapFlowers(3, L09)).isEqualTo(listOf(Pack(1, 3)))
+    assertThat(packaging.wrapFlowers(6, L09)).isEqualTo(listOf(Pack(1, 6)))
+    assertThat(packaging.wrapFlowers(9, L09)).isEqualTo(listOf(Pack(1, 9)))
+    assertThat(packaging.wrapFlowers(12, L09)).isEqualTo(listOf(Pack(1, 9),Pack(1, 3)))
+    assertThat(packaging.wrapFlowers(15, L09)).isEqualTo(listOf(Pack(1, 9),Pack(1, 6)))
+    assertThat(packaging.wrapFlowers(18, L09)).isEqualTo(listOf(Pack(2, 9)))
   }
 
   @Test
   internal fun `should throw an exception if quantity of lilies can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapLilies(0) }.hasMessageContaining("Lilies can't be wrapped")
-    assertThatThrownBy { packaging.wrapLilies(-5) }.hasMessageContaining("Lilies can't be wrapped")
-    assertThatThrownBy { packaging.wrapLilies(2) }.hasMessageContaining("Lilies can't be wrapped")
-    assertThatThrownBy { packaging.wrapLilies(7) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, L09) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(-5, L09) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(2, L09) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(7, L09) }.hasMessageContaining("Lilies can't be wrapped")
   }
 
   @Test
   internal fun `should wrap some tulips`() {
-    assertThat(packaging.wrapTulips(3)).isEqualTo(listOf(Pack(1, 3)))
-    assertThat(packaging.wrapTulips(5)).isEqualTo(listOf(Pack(1, 5)))
-    assertThat(packaging.wrapTulips(6)).isEqualTo(listOf(Pack(2, 3)))
-    assertThat(packaging.wrapTulips(9)).isEqualTo(listOf(Pack(1, 9)))
-    assertThat(packaging.wrapTulips(10)).isEqualTo(listOf(Pack(2, 5)))
-    assertThat(packaging.wrapTulips(13)).isEqualTo(listOf(Pack(2, 5), Pack(1, 3)))
-    assertThat(packaging.wrapTulips(18)).isEqualTo(listOf(Pack(2, 9)))
-    assertThat(packaging.wrapTulips(43)).isEqualTo(listOf(Pack(3, 9), Pack(2, 5), Pack(2, 3)))
-    assertThat(packaging.wrapTulips(46)).isEqualTo(listOf(Pack(4, 9), Pack(2, 5)))
-    assertThat(packaging.wrapTulips(48)).isEqualTo(listOf(Pack(5, 9), Pack(1, 3)))
-    assertThat(packaging.wrapTulips(50)).isEqualTo(listOf(Pack(5, 9), Pack(1, 5)))
+    assertThat(packaging.wrapFlowers(3, T58)).isEqualTo(listOf(Pack(1, 3)))
+    assertThat(packaging.wrapFlowers(5, T58)).isEqualTo(listOf(Pack(1, 5)))
+    assertThat(packaging.wrapFlowers(6, T58)).isEqualTo(listOf(Pack(2, 3)))
+    assertThat(packaging.wrapFlowers(9, T58)).isEqualTo(listOf(Pack(1, 9)))
+    assertThat(packaging.wrapFlowers(10, T58)).isEqualTo(listOf(Pack(2, 5)))
+    assertThat(packaging.wrapFlowers(13, T58)).isEqualTo(listOf(Pack(2, 5), Pack(1, 3)))
+    assertThat(packaging.wrapFlowers(18, T58)).isEqualTo(listOf(Pack(2, 9)))
+    assertThat(packaging.wrapFlowers(43, T58)).isEqualTo(listOf(Pack(3, 9), Pack(2, 5), Pack(2, 3)))
+    assertThat(packaging.wrapFlowers(46, T58)).isEqualTo(listOf(Pack(4, 9), Pack(2, 5)))
+    assertThat(packaging.wrapFlowers(48, T58)).isEqualTo(listOf(Pack(5, 9), Pack(1, 3)))
+    assertThat(packaging.wrapFlowers(50, T58)).isEqualTo(listOf(Pack(5, 9), Pack(1, 5)))
   }
 
   @Test
   internal fun `should throw an exception if quantity of tulips can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapTulips(0) }.hasMessageContaining("Tulips can't be wrapped")
-    assertThatThrownBy { packaging.wrapTulips(-5) }.hasMessageContaining("Tulips can't be wrapped")
-    assertThatThrownBy { packaging.wrapTulips(2) }.hasMessageContaining("Tulips can't be wrapped")
-    assertThatThrownBy { packaging.wrapTulips(7) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, T58) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(-5, T58) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(2, T58) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(7, T58) }.hasMessageContaining("Tulips can't be wrapped")
   }
 }
