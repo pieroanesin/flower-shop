@@ -1,5 +1,22 @@
 package it.anesin
 
-import org.junit.jupiter.api.Assertions.*
+import it.anesin.FlowerType.T58
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 
-internal class DefaultCashRegisterTest
+internal class DefaultCashRegisterTest {
+  private var cashRegister = DefaultCashRegister()
+
+  @Test
+  internal fun `should invoice a list of packs full of Tulips`() {
+    val packs = listOf(Pack(2, 5, T58), Pack(1, 3, T58))
+
+    val invoice = cashRegister.invoice(packs)
+
+    assertThat(invoice).isEqualTo("""
+      13 T58 $25.85
+      2 x 5  $9.95
+      1 x 3  $5.95
+    """.trimIndent())
+  }
+}
