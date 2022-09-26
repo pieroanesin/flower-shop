@@ -10,6 +10,6 @@ fun main() {
 
   order
     .map { product -> packaging.wrapFlowers(product.quantity, product.type) }
-    .map { packs -> cashRegister.invoice(packs) }
+    .map { packages -> cashRegister.invoice(packages) }
     .map { invoice -> println(invoice) }
 }
