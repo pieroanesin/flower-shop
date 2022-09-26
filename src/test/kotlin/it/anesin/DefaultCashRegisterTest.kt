@@ -1,7 +1,9 @@
 package it.anesin
 
 import it.anesin.FlowerType.*
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class DefaultCashRegisterTest {
@@ -37,5 +39,12 @@ internal class DefaultCashRegisterTest {
     assertThat(invoice).contains("13 T58 $25.85")
     assertThat(invoice).contains("2 x 5 $9.95")
     assertThat(invoice).contains("1 x 3 $5.95")
+  }
+
+  @Test
+  internal fun `should throw an exception if bundle not exist`() {
+    val packs = listOf(Pack(1, 20, R12))
+
+    assertThatThrownBy { cashRegister.invoice(packs) }.hasMessageContaining("Price for bundle R12 with size 20 not exist")
   }
 }

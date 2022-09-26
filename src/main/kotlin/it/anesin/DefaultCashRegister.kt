@@ -7,18 +7,19 @@ class DefaultCashRegister: CashRegister {
     var totalPrice = 0.0
 
     packs.forEach { pack ->
-      totalFlowers += (pack.bundleSize * pack.bundleQuantity)
+      totalFlowers += pack.bundleSize * pack.bundleQuantity
       totalPrice += priceOf(pack)
     }
 
     var receipt = "$totalFlowers ${packs.first().flowerType} $${String.format("%.2f", totalPrice)}"
 
     packs.forEach { pack ->
-      receipt += "\n\t ${pack.bundleQuantity} x ${pack.bundleSize} $${pack.flowerType.bundleSizePrice[pack.bundleSize]}"
+      receipt += "\n\t ${pack.bundleQuantity} x ${pack.bundleSize} $${bundlePrice(pack)}"
     }
 
     return receipt
   }
 
-  private fun priceOf(pack: Pack): Double = (pack.flowerType.bundleSizePrice[pack.bundleSize]?.times(pack.bundleQuantity)) ?: 0.0
+  private fun priceOf(pack: Pack): Double = (bundlePrice(pack).times(pack.bundleQuantity))
+  private fun bundlePrice(pack: Pack) = pack.flowerType.bundleSizePrice[pack.bundleSize] ?: throw Exception("Price for bundle ${pack.flowerType} with size ${pack.bundleSize} not exist")
 }
