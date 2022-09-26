@@ -1,12 +1,21 @@
 package it.anesin
 
-import it.anesin.FlowerType.L09
-import it.anesin.FlowerType.T58
+import it.anesin.FlowerType.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 internal class DefaultCashRegisterTest {
   private var cashRegister = DefaultCashRegister()
+
+  @Test
+  internal fun `should invoice a list of packs full of Roses`() {
+    val packs = listOf(Pack(1, 10, R12))
+
+    val invoice = cashRegister.invoice(packs)
+
+    assertThat(invoice).contains("10 R12 $12.99")
+    assertThat(invoice).contains("1 x 10 $12.99")
+  }
 
   @Test
   internal fun `should invoice a list of packs full of Lilies`() {
