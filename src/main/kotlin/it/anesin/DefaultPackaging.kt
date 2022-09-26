@@ -36,9 +36,9 @@ class DefaultPackaging : Packaging {
     val bigPack = packs[0]
     var mediumPack = packs[1]
 
-    mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize, mediumPack.type)
+    mediumPack = Pack(mediumPack.bundleQuantity - 1, mediumPack.bundleSize, mediumPack.flowerType)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, mediumPack.type)
+    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, mediumPack.flowerType)
     val smallPack = packs.first()
 
     return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
@@ -48,9 +48,9 @@ class DefaultPackaging : Packaging {
     var bigPack = packs[0]
     var mediumPack = packs[1]
 
-    bigPack = Pack(bigPack.bundleQuantity - 1, bigPack.bundleSize, bigPack.type)
+    bigPack = Pack(bigPack.bundleQuantity - 1, bigPack.bundleSize, bigPack.flowerType)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, bigPack.type)
+    val (packs, remainingFlowers) = wrap(flowers, bundleSizes, bigPack.flowerType)
     mediumPack = packs.first()
     val smallPack = packs.last()
 
