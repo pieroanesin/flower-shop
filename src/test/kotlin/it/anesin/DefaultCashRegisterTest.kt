@@ -13,10 +13,8 @@ internal class DefaultCashRegisterTest {
 
     val invoice = cashRegister.invoice(packs)
 
-    assertThat(invoice).isEqualTo("""
-      13 T58 $25.85
-      2 x 5  $9.95
-      1 x 3  $5.95
-    """.trimIndent())
+    assertThat(invoice).contains("13 T58 $25.85")
+    assertThat(invoice).contains("2 x 5 $9.95")
+    assertThat(invoice).contains("1 x 3 $5.95")
   }
 }
