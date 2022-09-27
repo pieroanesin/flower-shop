@@ -17,9 +17,6 @@ internal class DefaultPackagingTest {
     every { catalogue.bundlesOf(R12) } returns listOf(Bundle(5, 6.99), Bundle(10, 12.99))
     every { catalogue.bundlesOf(L09) } returns listOf(Bundle(3, 9.95), Bundle(6, 16.95), Bundle(9, 24.95))
     every { catalogue.bundlesOf(T58) } returns listOf(Bundle(3, 5.95), Bundle(5, 9.95), Bundle(9, 16.99))
-    every { catalogue.bundleSizesOf(R12) } returns listOf(5, 10)
-    every { catalogue.bundleSizesOf(L09) } returns listOf(3, 6, 9)
-    every { catalogue.bundleSizesOf(T58) } returns listOf(3, 5, 9)
   }
 
   @Test
