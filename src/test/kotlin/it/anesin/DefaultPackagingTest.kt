@@ -1,12 +1,23 @@
 package it.anesin
 
+import io.mockk.every
+import io.mockk.mockk
 import it.anesin.FlowerType.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 internal class DefaultPackagingTest {
-  private var packaging = DefaultPackaging()
+  private val catalogue = mockk<Catalogue>()
+  private var packaging = DefaultPackaging(catalogue)
+
+  @BeforeEach
+  internal fun setUp() {
+    every { catalogue.bundleSizesOf(R12) } returns listOf(5, 10)
+    every { catalogue.bundleSizesOf(L09) } returns listOf(3, 6, 9)
+    every { catalogue.bundleSizesOf(T58) } returns listOf(3, 5, 9)
+  }
 
   @Test
   internal fun `should wrap some roses`() {

@@ -1,26 +1,20 @@
 package it.anesin
 
-import it.anesin.FlowerType.*
-
-class DefaultPackaging : Packaging {
+class DefaultPackaging(private val catalogue: Catalogue) : Packaging {
 
   override fun wrapFlowers(quantity: Int, type: FlowerType): List<Package> {
-    val bundleSizes = when(type) {
-      R12 -> listOf(10, 5)
-      L09 -> listOf(9, 6, 3)
-      T58 -> listOf(9, 5, 3)
-    }
+    val bundleSizes = catalogue.bundleSizesOf(type).sortedDescending()
     var (packages, remainingFlowers) = wrap(quantity, bundleSizes, type)
 
     while (isWrongCombination(remainingFlowers) && (packages[0].bundleQuantity > 0 || packages[1].bundleQuantity > 0)) {
       while (isWrongCombination(remainingFlowers) && packages[1].bundleQuantity > 0) {
-        changeMediumPackQuantity(packages, quantity, listOf(bundleSizes.last())).let { result ->
+        changeMediumPackQuantity(packages, quantity, bundleSizes).let { result ->
           packages = result.first
           remainingFlowers = result.second
         }
       }
       if (isWrongCombination(remainingFlowers) && packages[0].bundleQuantity > 0) {
-        changeBigPackQuantity(packages, quantity, bundleSizes.drop(1)).let { result ->
+        changeBigPackQuantity(packages, quantity, bundleSizes).let { result ->
           packages = result.first
           remainingFlowers = result.second
         }
@@ -38,8 +32,8 @@ class DefaultPackaging : Packaging {
 
     mediumPack = Package(mediumPack.bundleQuantity - 1, mediumPack.bundleSize, mediumPack.flowerType)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packages, remainingFlowers) = wrap(flowers, bundleSizes, mediumPack.flowerType)
-    val smallPack = packages.first()
+    val (newPackages, remainingFlowers) = wrap(flowers, listOf(bundleSizes.min()), mediumPack.flowerType)
+    val smallPack = newPackages.first()
 
     return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
   }
@@ -50,9 +44,9 @@ class DefaultPackaging : Packaging {
 
     bigPack = Package(bigPack.bundleQuantity - 1, bigPack.bundleSize, bigPack.flowerType)
     val flowers = totalFlowers - ((bigPack.bundleQuantity * bigPack.bundleSize) + (mediumPack.bundleQuantity * mediumPack.bundleSize))
-    val (packages, remainingFlowers) = wrap(flowers, bundleSizes, bigPack.flowerType)
-    mediumPack = packages.first()
-    val smallPack = packages.last()
+    val (newPackages, remainingFlowers) = wrap(flowers, bundleSizes.drop(1), bigPack.flowerType)
+    mediumPack = newPackages.first()
+    val smallPack = newPackages.last()
 
     return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
   }

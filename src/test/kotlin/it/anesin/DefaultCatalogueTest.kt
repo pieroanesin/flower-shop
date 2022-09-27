@@ -27,4 +27,11 @@ internal class DefaultCatalogueTest {
 
     assertThat(bundles).isEqualTo(listOf(Bundle(3, 5.95), Bundle(5, 9.95), Bundle(9, 16.99)))
   }
+
+  @Test
+  internal fun `should return the bundle sizes of roses in catalog`() {
+    val bundles = catalogue.bundleSizesOf(R12)
+
+    assertThat(bundles).isEqualTo(listOf(5, 10))
+  }
 }

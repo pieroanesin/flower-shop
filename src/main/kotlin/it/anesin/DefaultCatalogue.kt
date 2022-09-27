@@ -10,4 +10,8 @@ class DefaultCatalogue: Catalogue {
       T58 -> listOf(Bundle(3, 5.95), Bundle(5, 9.95), Bundle(9, 16.99))
     }
   }
+
+  override fun bundleSizesOf(type: FlowerType): List<Int> {
+    return bundlesOf(type).map { it.size }
+  }
 }
