@@ -32,9 +32,9 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should throw an exception if quantity of roses can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapFlowers(0, R12) }.hasMessageContaining("Roses can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(-5, R12) }.hasMessageContaining("Roses can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(2, R12) }.hasMessageContaining("Roses can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, R12) }.hasMessageContaining("The quantity of Roses is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(-5, R12) }.hasMessageContaining("The quantity of Roses is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(2, R12) }.hasMessageContaining("The quantity of Roses is less than the smallest bundle")
     assertThatThrownBy { packaging.wrapFlowers(7, R12) }.hasMessageContaining("Roses can't be wrapped")
   }
 
@@ -47,16 +47,16 @@ internal class DefaultPackagingTest {
     assertThat(packaging.wrapFlowers(3, L09)).isEqualTo(listOf(Package(1, bundleThree)))
     assertThat(packaging.wrapFlowers(6, L09)).isEqualTo(listOf(Package(1, bundleSix)))
     assertThat(packaging.wrapFlowers(9, L09)).isEqualTo(listOf(Package(1, bundleNine)))
-    assertThat(packaging.wrapFlowers(12, L09)).isEqualTo(listOf(Package(1, bundleNine), Package(1, bundleThree)))
+    assertThat(packaging.wrapFlowers(12, L09)).isEqualTo(listOf(Package(2, bundleSix)))
     assertThat(packaging.wrapFlowers(15, L09)).isEqualTo(listOf(Package(1, bundleNine), Package(1, bundleSix)))
     assertThat(packaging.wrapFlowers(18, L09)).isEqualTo(listOf(Package(2, bundleNine)))
   }
 
   @Test
   internal fun `should throw an exception if quantity of lilies can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapFlowers(0, L09) }.hasMessageContaining("Lilies can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(-5, L09) }.hasMessageContaining("Lilies can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(2, L09) }.hasMessageContaining("Lilies can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, L09) }.hasMessageContaining("The quantity of Lilies is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(-5, L09) }.hasMessageContaining("The quantity of Lilies is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(2, L09) }.hasMessageContaining("The quantity of Lilies is less than the smallest bundle")
     assertThatThrownBy { packaging.wrapFlowers(7, L09) }.hasMessageContaining("Lilies can't be wrapped")
   }
 
@@ -81,9 +81,9 @@ internal class DefaultPackagingTest {
 
   @Test
   internal fun `should throw an exception if quantity of tulips can't be wrapped`() {
-    assertThatThrownBy { packaging.wrapFlowers(0, T58) }.hasMessageContaining("Tulips can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(-5, T58) }.hasMessageContaining("Tulips can't be wrapped")
-    assertThatThrownBy { packaging.wrapFlowers(2, T58) }.hasMessageContaining("Tulips can't be wrapped")
+    assertThatThrownBy { packaging.wrapFlowers(0, T58) }.hasMessageContaining("The quantity of Tulips is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(-5, T58) }.hasMessageContaining("The quantity of Tulips is less than the smallest bundle")
+    assertThatThrownBy { packaging.wrapFlowers(2, T58) }.hasMessageContaining("The quantity of Tulips is less than the smallest bundle")
     assertThatThrownBy { packaging.wrapFlowers(7, T58) }.hasMessageContaining("Tulips can't be wrapped")
   }
 }
