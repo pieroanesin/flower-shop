@@ -1,6 +1,6 @@
 package it.anesin
 
-class DefaultCashRegister: CashRegister {
+class DefaultCashRegister(private val catalogue: Catalogue) : CashRegister {
 
   override fun invoice(packages: List<Package>): String {
     var totalFlowers = 0
@@ -21,5 +21,6 @@ class DefaultCashRegister: CashRegister {
   }
 
   private fun priceOf(pack: Package): Double = (bundlePrice(pack).times(pack.bundleQuantity))
-  private fun bundlePrice(pack: Package) = pack.flowerType.bundleSizePrice[pack.bundleSize] ?: throw Exception("Price for bundle ${pack.flowerType} with size ${pack.bundleSize} not exist")
+  private fun bundlePrice(pack: Package) = catalogue.bundlesOf(pack.flowerType).singleOrNull { it.size == pack.bundleSize }?.price
+    ?: throw Exception("Price for bundle ${pack.flowerType} with size ${pack.bundleSize} not exist")
 }
