@@ -11,7 +11,7 @@ class DefaultCashRegister : CashRegister {
       totalPrice += pack.price()
     }
 
-    var receipt = "$totalFlowers ${packages.first().flowerType} $${String.format("%.2f", totalPrice)}"
+    var receipt = "$totalFlowers ${packages.first().bundle.type} $${String.format("%.2f", totalPrice)}"
 
     packages.forEach { pack ->
       receipt += "\n\t ${pack.bundleQuantity} x ${pack.bundle.size} $${pack.bundle.price}"

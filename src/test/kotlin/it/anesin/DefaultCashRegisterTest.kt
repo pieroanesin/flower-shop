@@ -9,7 +9,7 @@ internal class DefaultCashRegisterTest {
 
   @Test
   internal fun `should invoice a list of packages full of Roses`() {
-    val packages = listOf(Package(R12, 1, Bundle(10, 12.99)))
+    val packages = listOf(Package(1, Bundle(10, 12.99, R12)))
 
     val invoice = cashRegister.invoice(packages)
 
@@ -19,7 +19,7 @@ internal class DefaultCashRegisterTest {
 
   @Test
   internal fun `should invoice a list of packages full of Lilies`() {
-    val packages = listOf(Package(L09, 1, Bundle(9, 24.95)), Package(L09, 1, Bundle(6, 16.95)))
+    val packages = listOf(Package(1, Bundle(9, 24.95, L09)), Package(1, Bundle(6, 16.95, L09)))
 
     val invoice = cashRegister.invoice(packages)
 
@@ -30,7 +30,7 @@ internal class DefaultCashRegisterTest {
 
   @Test
   internal fun `should invoice a list of packages full of Tulips`() {
-    val packages = listOf(Package(T58, 2, Bundle(5, 9.95)), Package(T58, 1, Bundle(3, 5.95)))
+    val packages = listOf(Package(2, Bundle(5, 9.95, T58)), Package(1, Bundle(3, 5.95, T58)))
 
     val invoice = cashRegister.invoice(packages)
 
