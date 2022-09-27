@@ -4,21 +4,15 @@ class DefaultPackaging(private val catalogue: Catalogue) : Packaging {
 
   override fun wrapFlowers(quantity: Int, type: FlowerType): List<Package> {
     val bundles = catalogue.bundlesOf(type).sortedByDescending { it.size }
+
     var (packages, remainingFlowers) = wrap(quantity, bundles)
 
-    while (isWrongCombination(remainingFlowers) && (packages[0].bundleQuantity > 0 || packages[1].bundleQuantity > 0)) {
-      while (isWrongCombination(remainingFlowers) && packages[1].bundleQuantity > 0) {
-        changeMediumPackQuantity(packages, quantity, bundles).let { result ->
-          packages = result.first
-          remainingFlowers = result.second
+    while (isWrongCombination(remainingFlowers) && packagesToChange(packages) > 0) {
+      changePackages(packages.dropLast(packagesToChange(packages)), quantity, bundles)
+        .let { (newPackages, newRemainingFlowers) ->
+          packages = newPackages
+          remainingFlowers = newRemainingFlowers
         }
-      }
-      if (isWrongCombination(remainingFlowers) && packages[0].bundleQuantity > 0) {
-        changeBigPackQuantity(packages, quantity, bundles).let { result ->
-          packages = result.first
-          remainingFlowers = result.second
-        }
-      }
     }
 
     if (quantity < smallestBundle(bundles).size || remainingFlowers > 0) throw Exception("${type.description} can't be wrapped")
@@ -26,29 +20,20 @@ class DefaultPackaging(private val catalogue: Catalogue) : Packaging {
     return packages.filter { it.bundleQuantity > 0 }
   }
 
-  private fun changeMediumPackQuantity(packages: List<Package>, totalFlowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
-    val bigPack = packages[0]
-    var mediumPack = packages[1]
+  private fun packagesToChange(packages: List<Package>) = packages.dropLast(1).sortedBy { it.bundle.size }.indexOfFirst { it.bundleQuantity > 0 } + 1
+  private fun isWrongCombination(remainingFlowers: Int) = remainingFlowers != 0
+  private fun smallestBundle(bundles: List<Bundle>) = bundles.minBy { it.size }
 
-    mediumPack = Package(mediumPack.bundleQuantity - 1, mediumPack.bundle)
-    val flowers = totalFlowers - (bigPack.totalFlowers() + mediumPack.totalFlowers())
-    val (newPackages, remainingFlowers) = wrap(flowers, listOf(smallestBundle(bundles)))
-    val smallPack = newPackages.first()
+  private fun changePackages(packages: List<Package>, totalFlowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
+    val lastPackage = Package(packages.last().bundleQuantity - 1, packages.last().bundle)
+    val otherPackages = packages.dropLast(1)
+    val flowersAlreadyUsed = lastPackage.totalFlowers() + otherPackages.sumOf { it.totalFlowers() }
+    val flowersToUse = totalFlowers - flowersAlreadyUsed
+    val bundlesToUse = bundles.drop(packages.size)
 
-    return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
-  }
+    val (newPackages, remainingFlowers) = wrap(flowersToUse, bundlesToUse)
 
-  private fun changeBigPackQuantity(packages: List<Package>, totalFlowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
-    var bigPack = packages[0]
-    var mediumPack = packages[1]
-
-    bigPack = Package(bigPack.bundleQuantity - 1, bigPack.bundle)
-    val flowers = totalFlowers - (bigPack.totalFlowers() + mediumPack.totalFlowers())
-    val (newPackages, remainingFlowers) = wrap(flowers, bundlesWithoutBigger(bundles))
-    mediumPack = newPackages.first()
-    val smallPack = newPackages.last()
-
-    return Pair(listOf(bigPack, mediumPack, smallPack), remainingFlowers)
+    return Pair(otherPackages + lastPackage + newPackages, remainingFlowers)
   }
 
   private fun wrap(flowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
@@ -56,13 +41,13 @@ class DefaultPackaging(private val catalogue: Catalogue) : Packaging {
     var remainingFlowers = flowers
 
     bundles.forEach { bundle ->
-      packages.add(Package(bundleQuantity = remainingFlowers / bundle.size, bundle))
-      remainingFlowers %= bundle.size
+      val (bundleQuantity, restFlowers) = maxBundleQuantity(remainingFlowers, bundle)
+      packages.add(Package(bundleQuantity, bundle))
+      remainingFlowers = restFlowers
     }
+
     return Pair(packages, remainingFlowers)
   }
 
-  private fun isWrongCombination(remainingFlowers: Int) = remainingFlowers != 0
-  private fun smallestBundle(bundles: List<Bundle>) = bundles.minBy { it.size }
-  private fun bundlesWithoutBigger(bundles: List<Bundle>) = bundles.drop(1)
+  private fun maxBundleQuantity(remainingFlowers: Int, bundle: Bundle) = Pair(remainingFlowers / bundle.size, remainingFlowers % bundle.size)
 }
