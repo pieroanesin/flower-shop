@@ -2,22 +2,17 @@ package it.anesin
 
 class DefaultCashRegister : CashRegister {
 
-  override fun invoice(packages: List<Package>): String {
-    var finalReceipt = ""
-    val flowerTypes = FlowerType.values()
+  override fun invoice(packages: List<Package>) = FlowerType.values()
+    .map { flowerType -> packagesOf(flowerType, packages) }
+    .filter { filteredPackages -> filteredPackages.isNotEmpty() }
+    .map { filteredPackages -> sort(filteredPackages) }
+    .map { sortedPackages -> invoiceByType(sortedPackages) }
+    .joinToString("\n")
 
-    flowerTypes.map { flowerType ->
-      packages.filter { it.bundle.type == flowerType }
-    }
-      .map {
-        finalReceipt += pippo(it) + "\n"
-      }
+  private fun packagesOf(flowerType: FlowerType, packages: List<Package>) = packages.filter { it.bundle.type == flowerType }
+  private fun sort(packagesSingleType: List<Package>) = packagesSingleType.sortedByDescending { pack -> pack.bundle.size }
 
-    println(finalReceipt)
-    return finalReceipt
-  }
-
-  private fun pippo(packages: List<Package>): String {
+  private fun invoiceByType(packages: List<Package>): String? {
     var totalFlowers = 0
     var totalPrice = 0.0
 

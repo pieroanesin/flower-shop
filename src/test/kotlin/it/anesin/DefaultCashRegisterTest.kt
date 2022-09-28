@@ -42,11 +42,11 @@ internal class DefaultCashRegisterTest {
   @Test
   internal fun `should invoice a list of packages full of flowers`() {
     val packages = listOf(
-      Package(1, Bundle(10, 12.99, R12)),
-      Package(1, Bundle(9, 24.95, L09)),
-      Package(1, Bundle(6, 16.95, L09)),
       Package(2, Bundle(5, 9.95, T58)),
-      Package(1, Bundle(3, 5.95, T58))
+      Package(1, Bundle(10, 12.99, R12)),
+      Package(1, Bundle(6, 16.95, L09)),
+      Package(1, Bundle(3, 5.95, T58)),
+      Package(1, Bundle(9, 24.95, L09))
     )
 
     val invoice = cashRegister.invoice(packages)
