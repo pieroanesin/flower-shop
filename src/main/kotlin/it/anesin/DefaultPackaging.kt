@@ -3,62 +3,55 @@ package it.anesin
 class DefaultPackaging(private val catalogue: Catalogue) : Packaging {
 
   override fun wrapFlowers(quantity: Int, type: FlowerType): List<Package> {
-    if (quantityTooLow(quantity, type)) throw Exception("$quantity ${type.description} is less than the smallest bundle")
-    var (packages, remainingFlowers) = wrap(quantity, bundlesOf(type))
-    val combinations = if (isGoodCombination(remainingFlowers)) mutableListOf(combinationWith(packages)) else mutableListOf()
+    val bundles = catalogue.bundlesOf(type).sortedBy { it.size }
+    val bundleCounter = initBundleCounter(quantity, bundles)
 
-    while (tryOtherCombinations(packages)) {
-      changePackages(packagesToSave(packages), quantity, bundlesOf(type)).let { (newPackages, newRemainingFlowers) ->
-        packages = newPackages
-        remainingFlowers = newRemainingFlowers
+    if (quantity < smallestBundle(bundles).size) throw Exception("$quantity ${type.description} is less than the smallest bundle")
+
+    for (bundle in bundles) {
+      for (numFlowers in 1..quantity) {
+        if (numFlowers >= bundle.size) {
+          val remainingFlowers = numFlowers - bundle.size
+          if (isRemainingFlowersCompositionValid(bundleCounter, remainingFlowers)) {
+            when {
+              isNewFlowerCompositionSmaller(bundleCounter, numFlowers, remainingFlowers) ->
+                bundleCounter[numFlowers] = newFlowerComposition(bundleCounter, remainingFlowers, bundle)
+              isNewFlowerCompositionEqual(bundleCounter, numFlowers, remainingFlowers) && isNewFlowerCompositionCheaper(bundleCounter, numFlowers, remainingFlowers, bundle) ->
+                bundleCounter[numFlowers] = newFlowerComposition(bundleCounter, remainingFlowers, bundle)
+            }
+          }
+        }
       }
-      if (isGoodCombination(remainingFlowers)) combinations.add(combinationWith(packages))
     }
-    if (combinations.isEmpty()) throw Exception("$quantity ${type.description} can't be wrapped")
 
-    return combinationWithMinimalBundlesAndPrice(combinations).filter { it.bundleQuantity > 0 }
+    if (bundleCounter[quantity]!!.sumOf { it.bundleQuantity } >= Int.MAX_VALUE) throw Exception("$quantity ${type.description} can't be wrapped")
+
+    return bundleCounter[quantity]!!.sortedByDescending { it.bundle.size }.filter { it.bundleQuantity > 0 }
   }
 
-  private fun quantityTooLow(quantity: Int, type: FlowerType) = quantity < smallestBundle(bundlesOf(type)).size
-  private fun bundlesOf(type: FlowerType) = catalogue.bundlesOf(type).sortedByDescending { it.size }
-  private fun isGoodCombination(remainingFlowers: Int) = remainingFlowers == 0
   private fun smallestBundle(bundles: List<Bundle>) = bundles.minBy { it.size }
-  private fun tryOtherCombinations(packages: List<Package>) = packagesToChange(packages) > 0
-  private fun packagesToSave(packages: List<Package>) = packages.dropLast(packagesToChange(packages))
-  private fun packagesToChange(packages: List<Package>) = packages.dropLast(1).sortedBy { it.bundle.size }.indexOfFirst { it.bundleQuantity > 0 } + 1
-  private fun combinationWith(packages: List<Package>) = Triple(packages.sumOf { it.bundleQuantity }, packages.sumOf { it.bundle.price * it.bundleQuantity }, packages)
 
-  private fun combinationWithMinimalBundlesAndPrice(combinations: MutableList<Triple<Int, Double, List<Package>>>): List<Package> {
-    val lowestQuantityBundle = combinations.minOf { it.first }
-    val combinationsWithLessBundles = combinations.filter { it.first == lowestQuantityBundle }
-    val lowestPrice = combinationsWithLessBundles.minOf { it.second }
-    return combinationsWithLessBundles.first { it.second == lowestPrice }.third
+  private fun initBundleCounter(quantity: Int, bundles: List<Bundle>): MutableMap<Int, List<Package>> {
+    val bundleCounter = mutableMapOf<Int, List<Package>>()
+    bundleCounter[0] = listOf(Package(0, smallestBundle(bundles)))
+    for (i in 1..quantity) bundleCounter[i] = listOf(Package(Int.MAX_VALUE, smallestBundle(bundles)))
+    return bundleCounter
   }
 
-  private fun changePackages(packages: List<Package>, totalFlowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
-    val lastPackage = Package(packages.last().bundleQuantity - 1, packages.last().bundle)
-    val otherPackages = packages.dropLast(1)
-    val flowersAlreadyUsed = lastPackage.totalFlowers() + otherPackages.sumOf { it.totalFlowers() }
-    val flowersToUse = totalFlowers - flowersAlreadyUsed
-    val bundlesToUse = bundles.drop(packages.size)
+  private fun isRemainingFlowersCompositionValid(bundleCounter: MutableMap<Int, List<Package>>, remainingFlowers: Int) =
+    bundleCounter[remainingFlowers]!!.sumOf { it.bundleQuantity } != Int.MAX_VALUE
 
-    val (newPackages, remainingFlowers) = wrap(flowersToUse, bundlesToUse)
+  private fun isNewFlowerCompositionSmaller(bundleCounter: MutableMap<Int, List<Package>>, actualFlowers: Int, remainingFlowers: Int) =
+    bundleCounter[actualFlowers]!!.sumOf { it.bundleQuantity } > bundleCounter[remainingFlowers]!!.sumOf { it.bundleQuantity } + 1
 
-    return Pair(otherPackages + lastPackage + newPackages, remainingFlowers)
-  }
+  private fun isNewFlowerCompositionEqual(bundleCounter: MutableMap<Int, List<Package>>, actualFlowers: Int, remainingFlowers: Int) =
+    bundleCounter[actualFlowers]!!.sumOf { it.bundleQuantity } == bundleCounter[remainingFlowers]!!.sumOf { it.bundleQuantity } + 1
 
-  private fun wrap(flowers: Int, bundles: List<Bundle>): Pair<List<Package>, Int> {
-    val packages = mutableListOf<Package>()
-    var remainingFlowers = flowers
+  private fun isNewFlowerCompositionCheaper(bundleCounter: MutableMap<Int, List<Package>>, numFlowers: Int, remainingFlowers: Int, bundle: Bundle) =
+    bundleCounter[numFlowers]!!.sumOf { it.price() } > bundleCounter[remainingFlowers]!!.sumOf { it.price() } + bundle.price
 
-    bundles.forEach { bundle ->
-      val (bundleQuantity, restFlowers) = maxBundleQuantity(remainingFlowers, bundle)
-      packages.add(Package(bundleQuantity, bundle))
-      remainingFlowers = restFlowers
-    }
-
-    return Pair(packages, remainingFlowers)
-  }
-
-  private fun maxBundleQuantity(remainingFlowers: Int, bundle: Bundle) = Pair(remainingFlowers / bundle.size, remainingFlowers % bundle.size)
+  private fun newFlowerComposition(bundleCounter: MutableMap<Int, List<Package>>, remainingFlowers: Int, bundle: Bundle) =
+    bundleCounter[remainingFlowers]!!
+      .filterNot { it.bundle == bundle }
+      .plus(Package((bundleCounter[remainingFlowers]!!.singleOrNull { it.bundle == bundle }?.bundleQuantity ?: 0) + 1, bundle))
 }
